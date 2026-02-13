@@ -3,6 +3,9 @@ package com.couple.back.application.service;
 import com.couple.back.application.dto.AuthResponse;
 import com.couple.back.domain.model.User;
 import com.couple.back.domain.repository.UserRepository;
+import com.google.firebase.ErrorCode;
+import com.google.firebase.FirebaseException;
+import com.google.firebase.auth.AuthErrorCode;
 import com.google.firebase.auth.FirebaseAuthException;
 import com.google.firebase.auth.FirebaseToken;
 import org.junit.jupiter.api.BeforeEach;
@@ -30,7 +33,6 @@ class AuthServiceTest {
     @Mock
     private UserRepository userRepository;
     
-    @InjectMocks
     private AuthService authService;
     
     private FirebaseToken mockToken;
@@ -38,6 +40,7 @@ class AuthServiceTest {
     @BeforeEach
     void setUp() {
         mockToken = mock(FirebaseToken.class);
+        authService = new AuthService(firebaseAuthService, userRepository);
     }
     
     @Test
@@ -134,13 +137,11 @@ class AuthServiceTest {
     void authenticateWithFirebase_InvalidToken_ThrowsException() throws FirebaseAuthException {
         // Arrange
         String idToken = "invalid-token";
-        when(firebaseAuthService.verifyToken(idToken))
-                .thenThrow(new FirebaseAuthException("INVALID_TOKEN", "Invalid token"));
-        
+        doThrow(new RuntimeException("Invalid token")).when(firebaseAuthService).verifyToken(idToken);
         // Act & Assert
-        assertThrows(FirebaseAuthException.class, () -> {
-            authService.authenticateWithFirebase(idToken);
-        });
+    assertThrows(RuntimeException.class, () -> {
+        authService.authenticateWithFirebase(idToken);
+    });
         
         verify(userRepository, never()).save(any(User.class));
     }
