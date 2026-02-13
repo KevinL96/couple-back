@@ -31,7 +31,7 @@ This project follows Clean Architecture principles with the following layers:
 ## Prerequisites
 
 - Java 17 or higher
-- Maven 3.6 or higher
+- Gradle 8.10 or higher (or use the included Gradle wrapper)
 - Firebase project with Authentication enabled
 
 ## Setup
@@ -51,13 +51,13 @@ This project follows Clean Architecture principles with the following layers:
 2. **Build the Project**
 
    ```bash
-   mvn clean install
+   ./gradlew clean build
    ```
 
 3. **Run the Application**
 
    ```bash
-   mvn spring-boot:run
+   ./gradlew bootRun
    ```
 
    The application will start on `http://localhost:8080`
@@ -149,7 +149,7 @@ Access the H2 database console at: `http://localhost:8080/h2-console`
 ### Running Tests
 
 ```bash
-mvn test
+./gradlew test
 ```
 
 ## Security
